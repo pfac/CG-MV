@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToneMapping", "ToneMapping\ToneMapping.vcxproj", "{627B9005-429B-4114-9238-AF12D09E524B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HighContrast", "HighContrast\HighContrast.vcxproj", "{4F817FC8-4C1F-4955-967F-11C65F861B0C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{627B9005-429B-4114-9238-AF12D09E524B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{627B9005-429B-4114-9238-AF12D09E524B}.Debug|Win32.Build.0 = Debug|Win32
+		{627B9005-429B-4114-9238-AF12D09E524B}.Release|Win32.ActiveCfg = Release|Win32
+		{627B9005-429B-4114-9238-AF12D09E524B}.Release|Win32.Build.0 = Release|Win32
+		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Debug|Win32.Build.0 = Debug|Win32
+		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Release|Win32.ActiveCfg = Release|Win32
+		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
