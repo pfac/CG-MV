@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToneMapping", "ToneMapping\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HighContrast", "HighContrast\HighContrast.vcxproj", "{4F817FC8-4C1F-4955-967F-11C65F861B0C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLSL_Test", "GLSL_Test\GLSL_Test.vcxproj", "{4E983ACC-FE57-4C97-B883-2B279229C476}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Debug|Win32.Build.0 = Debug|Win32
 		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Release|Win32.ActiveCfg = Release|Win32
 		{4F817FC8-4C1F-4955-967F-11C65F861B0C}.Release|Win32.Build.0 = Release|Win32
+		{4E983ACC-FE57-4C97-B883-2B279229C476}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E983ACC-FE57-4C97-B883-2B279229C476}.Debug|Win32.Build.0 = Debug|Win32
+		{4E983ACC-FE57-4C97-B883-2B279229C476}.Release|Win32.ActiveCfg = Release|Win32
+		{4E983ACC-FE57-4C97-B883-2B279229C476}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
