@@ -10,7 +10,11 @@
 // GLUT is the toolkit to interface with the OS
 #include <GL/freeglut.h>
 
-GLuint vao, prog;
+#include "vsShaderLib.h"
+
+VSShaderLib shader;
+GLuint vao;
+float lpos[4] = {1.0,0.0,1.0,0.0};
 
 // ------------------------------------------------------------
 //
@@ -19,8 +23,24 @@ GLuint vao, prog;
 
 void changeSize(int w, int h) {
 
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window of zero width).
+	if(h == 0)
+		h = 1;
+
+	float ratio = 1.0* w / h;
+
+	// Reset the coordinate system before modifying
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
 	// Set the viewport to be the entire window
     glViewport(0, 0, w, h);
+
+	// Set the correct perspective.
+	gluPerspective(45,ratio,1,100);
+	glMatrixMode(GL_MODELVIEW);
+
 }
 
 // --------------------------------------------------------
@@ -30,47 +50,106 @@ void changeSize(int w, int h) {
 
 void renderScene() {
 
+// ADD STUFF HERE
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-// ADD STUFF HERE
-	glUseProgram(prog);
-	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glLoadIdentity();
+	gluLookAt(0.0,5.0,5.0, 
+		      0.0,0.0,0.0,
+			  0.0f,1.0f,0.0f);
+
+	glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+	glutSolidTeapot(1);
 
 	glutSwapBuffers();
 
 }
 
+void printShaderInfoLog(GLuint obj)
+{
+    int infologLength = 0;
+    int charsWritten  = 0;
+    char *infoLog;
+
+	glGetShaderiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
+
+    if (infologLength > 0)
+    {
+        infoLog = (char *)malloc(infologLength);
+        glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
+		printf("%s\n",infoLog);
+        free(infoLog);
+    }
+}
+
+void printProgramInfoLog(GLuint obj)
+{
+    int infologLength = 0;
+    int charsWritten  = 0;
+    char *infoLog;
+
+	glGetProgramiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
+
+    if (infologLength > 0)
+    {
+        infoLog = (char *)malloc(infologLength);
+        glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
+		printf("%s\n",infoLog);
+        free(infoLog);
+    }
+}
+
+GLuint v,f,f2,p;
+
 GLuint setupShaders() {
 
 // ADD STUFF HERE
-	GLuint f,v;
+	
+	shader.init();
+	shader.loadShader(VSShaderLib::VERTEX_SHADER, "anim.vert");
+	shader.loadShader(VSShaderLib::FRAGMENT_SHADER, "anim.frag");
+	//shader.setProgramOutput(0, "colorFS");
+	shader.setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "position");
+	shader.prepareProgram();
+	glUseProgram(shader.getProgramIndex());
+	return 1;
+
+	char *vs = NULL,*fs = NULL,*fs2 = NULL;
 
 	v = glCreateShader(GL_VERTEX_SHADER);
 	f = glCreateShader(GL_FRAGMENT_SHADER);
+	f2 = glCreateShader(GL_FRAGMENT_SHADER);
 
-	char *vs = textFileRead("color.vert");
-	char *fs = textFileRead("color.frag");
+	vs = textFileRead("anim.vert");
+	fs = textFileRead("anim.frag");
 
-	const char *vv = vs;
-	const char *ff = fs;
+	const char * vv = vs;
+	const char * ff = fs;
 
-	glShaderSource(v, 1, &vv, NULL);
-	glShaderSource(f, 1, &ff, NULL);
+	glShaderSource(v, 1, &vv,NULL);
+	glShaderSource(f, 1, &ff,NULL);
 
-	free(vs);
-	free(fs);
+	free(vs);free(fs);
 
 	glCompileShader(v);
 	glCompileShader(f);
 
-	prog = glCreateProgram();
-	glAttachShader(prog,v);
-	glAttachShader(prog,f);
-	glLinkProgram(prog);
-	printf("Shaders done\n");
-	return(1);
+	printShaderInfoLog(v);
+	printShaderInfoLog(f);
+	printShaderInfoLog(f2);
+
+	p = glCreateProgram();
+	glAttachShader(p,v);
+	glAttachShader(p,f);
+
+	glLinkProgram(p);
+	//printProgramInfoLog(p);
+
+	glUseProgram(p);
+	GLuint loc = glGetUniformLocation(p,"time");
+	return 0;
 }
+
 
 
 
@@ -80,24 +159,23 @@ GLuint setupShaders() {
 //
 
 
-void initGL()
-{
+void initGL() {
 
 	setupShaders();
 
 // ADD STUFF HERE
-	float position[12] = {-0.5f, -0.5f, 0.0f, 1.0f,
-							0.0f, 0.5f, 0.0f, 1.0f, 
-							0.5f,   -0.5f, 0.0f, 1.0f};
+	float position[12] = {0.0f, 1.0f, 0.0, 1.0f,
+							1.0f, 0.0f, 0.0f, 1.0f, 
+							-1.0f,   0.0f, 0.0f, 1.0f};
 
 	float color[9] = {	1.0f, 0.0f, 0.0f,
-						0.0f, 1.0f, 0.0f,
-						0.0f, 0.0f, 1.0f};
+						0.0f, 0.0f, 0.0f,
+						0.0f, 0.0f, 0.0f};
 
-	GLint posLoc = glGetAttribLocation(prog, "position");
-	GLint colorLoc =  glGetAttribLocation(prog, "color");
+	//GLint posLoc = glGetAttribLocation(prog, "position");
+	//GLint colorLoc =  glGetAttribLocation(prog, "color");
 
-	glGenVertexArrays(1, &vao);
+	/*glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
 	GLuint buffer;
@@ -106,25 +184,20 @@ void initGL()
 	//bind buffer for positions  and copy data  into buffer
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(position), position, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(posLoc);
-	glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, 0);
+	glEnableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::VERTEX_COORD_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
 
 	glGenBuffers(1, &buffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(colorLoc);
-	glVertexAttribPointer(colorLoc, 3, GL_FLOAT, 0, 0, 0);
-
-
-	//glGenBuffers(1, &buffer);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(index), index, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(shader.);
+	glVertexAttribPointer(VSShaderLib::VERTEX_COORD_ATTRIB, 3, GL_FLOAT, 0, 0, 0);*/
 
 	// some GL settings
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
-	glEnable(GL_MULTISAMPLE);
+	//glEnable(GL_MULTISAMPLE);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 }
@@ -141,14 +214,14 @@ int main(int argc, char **argv) {
 //  GLUT initialization
 	glutInit(&argc, argv);
 
-	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA|GLUT_MULTISAMPLE);
+	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
 
-	glutInitContextVersion (3, 3);
-	glutInitContextProfile (GLUT_CORE_PROFILE );
-	glutInitContextFlags(GLUT_DEBUG);
+	//glutInitContextVersion (3, 3);
+	//glutInitContextProfile (GLUT_CORE_PROFILE );
+	//glutInitContextFlags(GLUT_DEBUG);
 
 	glutInitWindowPosition(100,100);
-	glutInitWindowSize(640,360);
+	glutInitWindowSize(320,320);
 	glutCreateWindow("Lighthouse3D - Simplest Demo");
 
 //  Callback Registration
@@ -182,9 +255,8 @@ int main(int argc, char **argv) {
 	   printf("Context Profile: Compatibility\n");
    glGetIntegerv(GL_CONTEXT_FLAGS, &param);
 
-	initGL();
-
-	//  GLUT main loop
+	glEnable(GL_DEPTH_TEST);
+	setupShaders();
 	glutMainLoop();
 
 	return(1);

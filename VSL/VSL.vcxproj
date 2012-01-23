@@ -84,6 +84,7 @@
     <Lib>
       <AdditionalDependencies>
       </AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

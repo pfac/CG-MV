@@ -29,6 +29,12 @@
     <None Include="color.frag">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="anim.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="anim.frag">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="textfile.h">

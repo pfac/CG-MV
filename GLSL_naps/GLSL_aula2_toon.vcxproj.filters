@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\VSL">
+      <UniqueIdentifier>{5d68772d-0372-40d7-b9b5-f814101e3a10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VSL">
+      <UniqueIdentifier>{9181b986-52b0-440d-9f79-2e8569e028e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\models">
+      <UniqueIdentifier>{9a0c1d3c-111a-4672-9bcb-261dae643f51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{f25b86a6-c51b-40eb-8e54-0240d4307b36}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsFontLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsGLInfoLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsLogLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsMathLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsProfileLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsResModelLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsResourceLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vsShaderLib.cpp">
+      <Filter>Source Files\VSL</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\vsFontLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsGLInfoLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vslibs.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsLogLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsMathLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsProfileLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsResModelLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsResourceLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vsShaderLib.h">
+      <Filter>Header Files\VSL</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\toon.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\toon.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\models\CatFinal.3ds">
+      <Filter>Resource Files\models</Filter>
+    </None>
+    <None Include="resources\models\Teapot.3ds">
+      <Filter>Resource Files\models</Filter>
+    </None>
+  </ItemGroup>
+</Project>

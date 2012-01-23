@@ -6,6 +6,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HighContrast", "HighContrast\HighContrast.vcxproj", "{4F817FC8-4C1F-4955-967F-11C65F861B0C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLSL_Test", "GLSL_Test\GLSL_Test.vcxproj", "{4E983ACC-FE57-4C97-B883-2B279229C476}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB} = {4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "l3dvsl", "VSL\VSL.vcxproj", "{4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLSL_naps", "GLSL_naps\GLSL_aula2_toon.vcxproj", "{36601B65-8200-4F52-8055-E963F4FDF501}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +32,14 @@ Global
 		{4E983ACC-FE57-4C97-B883-2B279229C476}.Debug|Win32.Build.0 = Debug|Win32
 		{4E983ACC-FE57-4C97-B883-2B279229C476}.Release|Win32.ActiveCfg = Release|Win32
 		{4E983ACC-FE57-4C97-B883-2B279229C476}.Release|Win32.Build.0 = Release|Win32
+		{4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB}.Debug|Win32.Build.0 = Debug|Win32
+		{4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB}.Release|Win32.ActiveCfg = Release|Win32
+		{4F35CEF9-E246-4582-9F98-BD7BB4E7FEEB}.Release|Win32.Build.0 = Release|Win32
+		{36601B65-8200-4F52-8055-E963F4FDF501}.Debug|Win32.ActiveCfg = Debug|Win32
+		{36601B65-8200-4F52-8055-E963F4FDF501}.Debug|Win32.Build.0 = Debug|Win32
+		{36601B65-8200-4F52-8055-E963F4FDF501}.Release|Win32.ActiveCfg = Release|Win32
+		{36601B65-8200-4F52-8055-E963F4FDF501}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
