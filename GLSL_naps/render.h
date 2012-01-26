@@ -16,6 +16,12 @@ namespace GLSL_Naps {
 	static VSMathLib *vsml;
 
 	static float lightPos[];
+	static float lightDir[];
+	static float lightRadius;
+
+	static float diffuse[];
+	static float specular[];
+	static float shininess;
 
 	public:
 		static void init(int *argc, char **argv);

@@ -43,6 +43,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -94,8 +95,21 @@
   <ItemGroup>
     <None Include="resources\models\CatFinal.3ds" />
     <None Include="resources\models\Teapot.3ds" />
+    <None Include="resources\shaders\light_focus.frag" />
+    <None Include="resources\shaders\light_focus.vert" />
+    <None Include="resources\shaders\light_gourad.frag" />
+    <None Include="resources\shaders\light_gourad.vert" />
+    <None Include="resources\shaders\light_phong.frag" />
+    <None Include="resources\shaders\light_phong.vert" />
     <None Include="resources\shaders\toon.frag" />
     <None Include="resources\shaders\toon.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
