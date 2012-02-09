@@ -156,6 +156,7 @@ protected:
 		GLenum type;
 		GLuint location;
 		GLuint size;
+		GLuint stride;
 	}myUniforms;
 
 	/// stores information for block uniforms

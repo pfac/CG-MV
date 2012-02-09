@@ -12,9 +12,14 @@
  * placement and projection definition for programmers
  * working with OpenGL core versions.
  *
- * \version 0.2.0
+ * \version 0.2.1
+ *		Split MODELVIEW into MODEL and VIEW
+ *			VIEWMODEL is now a computed matrix
+ *		Removed ALWAYS_SEND_TO_GL
+ *
+ * version 0.2.0
  *		Added derived matrices
- *			ProjectionModelView
+ *			Projection View Model
  *			Normal
  *		Added vector operations
  *		Library is now called vsMathLib
@@ -36,15 +41,6 @@
 #ifndef __VSMathLib__
 #define __VSMathLib__
 
-#undef VSMathLib_ALWAYS_SEND_TO_OPENGL
-
-// uncomment this if you want VSMathLib to always update
-// the matrices for you. Otherwise you'll have to call
-// a matrixTo* function to get them updated before
-// calling OpenGL draw commands
-
-//#define VSMathLib_ALWAYS_SEND_TO_OPENGL 
-
 #include <vector>
 #include <string>
 #include <GL/glew.h>
@@ -54,21 +50,26 @@ class VSMathLib {
 
 	public:
 		/// number of settable matrices
-		#define COUNT_MATRICES 3
+		#define COUNT_MATRICES 4
 		/// number of derived matrices
-		#define COUNT_COMPUTED_MATRICES 2
+		#define COUNT_COMPUTED_MATRICES 3
 
 
 		/// Enumeration of the matrix types
 		enum MatrixTypes{ 
-				MODELVIEW, 
+				MODEL,
+				VIEW, 
 				PROJECTION,
-				AUX,
+				AUX0,
+				AUX1,
+				AUX2,
+				AUX3
 		} ; 
 		/// Enumeration of derived matrices
 		enum ComputedMatrixTypes {
-			NORMAL = 0,
-			PROJMODELVIEW
+			VIEW_MODEL,
+			PROJ_VIEW_MODEL,
+			NORMAL
 		};
 
 		/// Singleton pattern
@@ -298,6 +299,14 @@ class VSMathLib {
 		*/
 		void multMatrixPoint(MatrixTypes aType, float *point, float *res);
 
+		/** Computes the multiplication of a computed matrix and a point 
+		  *
+		  * \param aType any value from ComputedMatrixTypes
+		  * \param point a float[4] representing a point
+		  * \param res a float[4] res = M * point
+		*/
+		void multMatrixPoint(ComputedMatrixTypes aType, float *point, float *res);
+
 		/** vector cross product res = a x b
 		  * Note: memory for the result must be allocatted by the caller
 		  * 
@@ -343,6 +352,7 @@ class VSMathLib {
 
 		/// The storage for matrices
 		float mMatrix[COUNT_MATRICES][16];
+		float mCompMatrix[COUNT_COMPUTED_MATRICES][16];
 
 		/// Stores the uniform block name
 		std::string mBlockName;
@@ -356,7 +366,9 @@ class VSMathLib {
 		int mComputedMatUniformArrayIndex[COUNT_COMPUTED_MATRICES];
 
 		/// The projection matrix
-		float mProjModelView[16];
+	//	float mProjModelView[16];
+		/// The ViewModel matrix
+	//	float mViewModel[16];
 
 		/// The normal matrix
 		float mNormal[12];
@@ -378,8 +390,10 @@ class VSMathLib {
 		void computeNormalMatrix();
 		/// Computes the normal matrix for use with glUniform
 		void computeNormalMatrix3x3();
-		/// Computes  M = Projectio * Modelview
-		void computeProjModelViewMatrix();
+
+		/// Computes Derived Matrices (4x4)
+		void computeDerivedMatrix(ComputedMatrixTypes aType);
+
 		//resMatrix = resMatrix * aMatrix
 		void multMatrix(float *resMatrix, float *aMatrix);
 

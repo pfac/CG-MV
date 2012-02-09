@@ -29,7 +29,7 @@
 #include "vsResModelLib.h"
 
 
-VSResModelLib::VSResModelLib():pScene(0)
+VSResModelLib::VSResModelLib():pScene(0), pUseAdjacency(false)
 {
 	mMyMeshes.reserve(10);
 	pMyMeshesAux.reserve(10);
@@ -87,7 +87,7 @@ VSResModelLib::load(std::string filename) {
 	min.x = min.y = min.z =  1e10f;
 	max.x = max.y = max.z = -1e10f;
 
-	mVSML->loadIdentity(VSMathLib::AUX);
+	mVSML->loadIdentity(VSMathLib::AUX0);
 	get_bounding_box_for_node(pScene->mRootNode,&min,&max);
 
 	float tmp;
@@ -101,18 +101,18 @@ VSResModelLib::load(std::string filename) {
 	mCenter[1] = min.y + (max.y - min.y) * 0.5f;
 	mCenter[2] = min.z + (max.z - min.z) * 0.5f;
 
-	mVSML->loadIdentity(VSMathLib::AUX);
-	mVSML->scale(VSMathLib::AUX, mScaleToUnitCube, mScaleToUnitCube, mScaleToUnitCube);
-	mVSML->translate(VSMathLib::AUX, -mCenter[0], -mCenter[1], -mCenter[2]);
+	mVSML->loadIdentity(VSMathLib::AUX0);
+	mVSML->scale(VSMathLib::AUX0, mScaleToUnitCube, mScaleToUnitCube, mScaleToUnitCube);
+	mVSML->translate(VSMathLib::AUX0, -mCenter[0], -mCenter[1], -mCenter[2]);
 
 	for (unsigned int i = 0; i < mMyMeshes.size(); ++i) {
 
-		mVSML->pushMatrix(mVSML->AUX);
+		mVSML->pushMatrix(mVSML->AUX0);
 
-		mVSML->multMatrix(mVSML->AUX, mMyMeshes[i].transform);
-		memcpy(mMyMeshes[i].transform, mVSML->get(mVSML->AUX), sizeof(float)*16);
+		mVSML->multMatrix(mVSML->AUX0, mMyMeshes[i].transform);
+		memcpy(mMyMeshes[i].transform, mVSML->get(mVSML->AUX0), sizeof(float)*16);
 
-		mVSML->popMatrix(mVSML->AUX);
+		mVSML->popMatrix(mVSML->AUX0);
 	}
 
 	// clear texture map
@@ -127,13 +127,13 @@ VSResModelLib::render () {
 
 	// we are only going to use texture unit 0
 
-	mVSML->pushMatrix(VSMathLib::MODELVIEW);
+	mVSML->pushMatrix(VSMathLib::MODEL);
 	//mVSML->scale(mScaleToUnitCube, mScaleToUnitCube, mScaleToUnitCube);
 	//mVSML->translate(-mCenter[0], -mCenter[1], -mCenter[2]);
 	for (unsigned int i = 0; i < mMyMeshes.size(); ++i) {
 	
-		mVSML->pushMatrix(VSMathLib::MODELVIEW);
-		mVSML->multMatrix(VSMathLib::MODELVIEW, 
+		mVSML->pushMatrix(VSMathLib::MODEL);
+		mVSML->multMatrix(VSMathLib::MODEL, 
 								mMyMeshes[i].transform);
 		// send matrices to shaders
 		mVSML->matricesToGL();
@@ -142,21 +142,23 @@ VSResModelLib::render () {
 		setMaterial(mMyMeshes[i].mat);
 
 		// bind texture
-		glActiveTexture(GL_TEXTURE0 + VSResourceLib::COLOR_TEXTURE0);
-		if (mMyMeshes[i].texUnits[0] != 0) {
-			glBindTexture(GL_TEXTURE_2D, 
-					mMyMeshes[i].texUnits[VSResourceLib::COLOR_TEXTURE0]);
+		for (unsigned int j = 0; j < VSResourceLib::MAX_TEXTURES; ++j) {
+			glActiveTexture(GL_TEXTURE0 + j);
+			if (mMyMeshes[i].texUnits[j] != 0) {
+				glBindTexture(GL_TEXTURE_2D, 
+						mMyMeshes[i].texUnits[j]);
+			}
+			else
+				glBindTexture(GL_TEXTURE_2D, 0);
 		}
-		else
-			glBindTexture(GL_TEXTURE_2D, 0);
 		// bind VAO
 		glBindVertexArray(mMyMeshes[i].vao);
 		glDrawElements(mMyMeshes[i].type, 
-			mMyMeshes[i].numIndices, GL_UNSIGNED_INT, 0);
-		mVSML->popMatrix(VSMathLib::MODELVIEW);
+			mMyMeshes[i].numIndices*2, GL_UNSIGNED_INT, 0);
+		mVSML->popMatrix(VSMathLib::MODEL);
 	}
 	glBindVertexArray(0);
-	mVSML->popMatrix(VSMathLib::MODELVIEW);
+	mVSML->popMatrix(VSMathLib::MODEL);
 }
 
 
@@ -218,12 +220,20 @@ VSResModelLib::genVAOsAndUniformBuffer(const struct aiScene *sc) {
 	struct Material aMat; 
 	GLuint buffer;
 	int totalTris = 0;
+	unsigned int *adjFaceArray;
 	
 	VSLOG(mLogInfo, "Number of Meshes: %d",sc->mNumMeshes);
 	// For each mesh
 	for (unsigned int n = 0; n < sc->mNumMeshes; ++n)
 	{
 		const struct aiMesh* mesh = sc->mMeshes[n];
+
+		if (mesh->mPrimitiveTypes != 4) {
+			aMesh.numIndices = 0;
+			pMyMeshesAux.push_back(aMesh);
+			continue;
+		}
+
 		VSLOG(mLogInfo, "Mesh[%d] Triangles %d",n, 
 							mesh->mNumFaces);
 		totalTris += mesh->mNumFaces;
@@ -241,6 +251,69 @@ VSResModelLib::genVAOsAndUniformBuffer(const struct aiScene *sc) {
 								3 * sizeof(unsigned int));
 			faceIndex += 3;
 		}
+
+		if (pUseAdjacency) {
+			// Create the half edge structure
+			std::map<std::pair<unsigned int,unsigned int>, struct HalfEdge *> myEdges;
+			struct HalfEdge *edge;
+
+			// fill it up with edges. twin info will be added latter
+			edge = (struct HalfEdge *)malloc(sizeof(struct HalfEdge) * mesh->mNumFaces * 3);
+			for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+		
+				edge[i*3].vertex = faceArray[i*3+1];
+				edge[i*3+1].vertex = faceArray[i*3+2];
+				edge[i*3+2].vertex = faceArray[i*3];
+
+				edge[i*3].next = &edge[i*3+1];
+				edge[i*3+1].next = &edge[i*3+2];
+				edge[i*3+2].next = &edge[i*3];
+
+				myEdges[std::pair<unsigned int,unsigned int>(faceArray[i*3+2],faceArray[i*3])] = &edge[i*3];
+				myEdges[std::pair<unsigned int,unsigned int>(faceArray[i*3],faceArray[i*3+1])] = &edge[i*3+1];
+				myEdges[std::pair<unsigned int,unsigned int>(faceArray[i*3+1],faceArray[i*3+2])] = &edge[i*3+2];
+			}
+
+			// add twin info
+			std::map<std::pair<unsigned int,unsigned int>, struct HalfEdge *>::iterator iter;
+			std::pair<unsigned int,unsigned int> edgeIndex, twinIndex;
+
+			iter = myEdges.begin();
+
+			for (; iter != myEdges.end(); ++iter) {
+		 
+				edgeIndex = iter->first;
+				twinIndex = std::pair<unsigned int, unsigned int>(edgeIndex.second, edgeIndex.first);
+
+				if (myEdges.count(twinIndex))
+					iter->second->twin = myEdges[twinIndex];
+				else
+					iter->second->twin = NULL;
+			}
+		
+			adjFaceArray = (unsigned int *)malloc(sizeof(unsigned int) * mesh->mNumFaces * 6);
+			for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+		
+				// NOTE: twin may be null
+				adjFaceArray[i*6]   = edge[3*i + 0].next->vertex;
+				adjFaceArray[i*6+1] = edge[3*i + 0].twin?edge[3*i + 0].twin->vertex:edge[3*i + 0].next->vertex;
+
+				adjFaceArray[i*6+2] = edge[3*i + 1].next->vertex;
+				adjFaceArray[i*6+3] = edge[3*i + 1].twin?edge[3*i + 1].twin->vertex:edge[3*i + 1].next->vertex;
+
+				adjFaceArray[i*6+4] = edge[3*i + 2].next->vertex;
+				adjFaceArray[i*6+5] = edge[3*i + 2].twin?edge[3*i + 2].twin->vertex:edge[3*i + 2].next->vertex;
+
+			}
+		}
+		//printf("\n");
+		//for (int i = 0; i < mesh->mNumFaces * 3; ++i)
+		//	printf("%d ", faceArray[i]);
+		//printf("\n");
+		//for (int i = 0; i < mesh->mNumFaces * 6; ++i)
+		//	printf("%d ", adjFaceArray[i]);
+		//printf("\n");
+
 		aMesh.numIndices = sc->mMeshes[n]->mNumFaces * 3;
 
 		// generate Vertex Array for mesh
@@ -250,9 +323,18 @@ VSResModelLib::genVAOsAndUniformBuffer(const struct aiScene *sc) {
 		// buffer for faces
 		glGenBuffers(1, &buffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+
+		if (pUseAdjacency) {
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+						sizeof(unsigned int) * mesh->mNumFaces * 6,
+						adjFaceArray, GL_STATIC_DRAW);
+			free(adjFaceArray);
+		}
+		else
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
 						sizeof(unsigned int) * mesh->mNumFaces * 3,
 						faceArray, GL_STATIC_DRAW);
+
 		free(faceArray);
 
 		// buffer for vertex positions
@@ -313,6 +395,10 @@ VSResModelLib::genVAOsAndUniformBuffer(const struct aiScene *sc) {
 			sc->mMaterials[mesh->mMaterialIndex];
 			
 		aiString texPath;	//contains filename of texture
+
+		for (int j = 0; j < VSResourceLib::MAX_TEXTURES; ++j)
+			aMesh.texUnits[j] = 0;
+
 		if(AI_SUCCESS == mtl->GetTexture(aiTextureType_DIFFUSE, 
 											0, &texPath)){
 				//bind texture
@@ -365,7 +451,7 @@ VSResModelLib::genVAOsAndUniformBuffer(const struct aiScene *sc) {
 		pMyMeshesAux.push_back(aMesh);
 	}
 
-	mVSML->loadIdentity(VSMathLib::AUX);
+	mVSML->loadIdentity(VSMathLib::AUX0);
 	recursive_walk_for_matrices(sc, sc->mRootNode);
 
 	pMyMeshesAux.clear();
@@ -386,7 +472,7 @@ VSResModelLib::get_bounding_box_for_node (const struct aiNode* nd,
 {
 	unsigned int n = 0;
 
-	mVSML->pushMatrix(VSMathLib::AUX);
+	mVSML->pushMatrix(VSMathLib::AUX0);
 
 	if (nd->mNumMeshes) {
 
@@ -399,7 +485,7 @@ VSResModelLib::get_bounding_box_for_node (const struct aiNode* nd,
 		// apply node transformation
 		float aux[16];
 		memcpy(aux,&m,sizeof(float) * 16);
-		mVSML->multMatrix(VSMathLib::AUX, aux);
+		mVSML->multMatrix(VSMathLib::AUX0, aux);
 
 
 		for (; n < nd->mNumMeshes; ++n) {
@@ -415,7 +501,7 @@ VSResModelLib::get_bounding_box_for_node (const struct aiNode* nd,
 				a[2] = tmp.z; 
 				a[3] = 1.0f;
 
-				mVSML->multMatrixPoint(VSMathLib::AUX, a, res);
+				mVSML->multMatrixPoint(VSMathLib::AUX0, a, res);
 			
 				min->x = aisgl_min(min->x,res[0]);
 				min->y = aisgl_min(min->y,res[1]);
@@ -432,7 +518,7 @@ VSResModelLib::get_bounding_box_for_node (const struct aiNode* nd,
 		get_bounding_box_for_node(nd->mChildren[n],min,max);
 	}
 
-	mVSML->popMatrix(VSMathLib::AUX);
+	mVSML->popMatrix(VSMathLib::AUX0);
 }
 
 
@@ -441,7 +527,7 @@ VSResModelLib::recursive_walk_for_matrices(
 			const struct aiScene *sc, 
 			const struct aiNode* nd) {
 
-	mVSML->pushMatrix(VSMathLib::AUX);
+	mVSML->pushMatrix(VSMathLib::AUX0);
 	if (nd->mNumMeshes)
 	{
 		// Get node transformation matrix
@@ -451,7 +537,7 @@ VSResModelLib::recursive_walk_for_matrices(
 		// save model matrix and apply node transformation
 		float aux[16];
 		memcpy(aux,&m,sizeof(float) * 16);
-		mVSML->multMatrix(VSMathLib::AUX, aux);
+		mVSML->multMatrix(VSMathLib::AUX0, aux);
 	
 		// get matrices for all meshes assigned to this node
 		for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
@@ -461,7 +547,7 @@ VSResModelLib::recursive_walk_for_matrices(
 				struct MyMesh aMesh;
 				memcpy(&aMesh, &(pMyMeshesAux[nd->mMeshes[n]]), 
 											sizeof (aMesh));
-				memcpy(aMesh.transform,mVSML->get(VSMathLib::AUX), 
+				memcpy(aMesh.transform,mVSML->get(VSMathLib::AUX0), 
 											sizeof(float)*16);
 				aMesh.type = GL_TRIANGLES;
 				mMyMeshes.push_back(aMesh);
@@ -472,8 +558,19 @@ VSResModelLib::recursive_walk_for_matrices(
 	for (unsigned int n=0; n < nd->mNumChildren; ++n){
 		recursive_walk_for_matrices(sc, nd->mChildren[n]);
 	}
-	mVSML->popMatrix(VSMathLib::AUX);
+	mVSML->popMatrix(VSMathLib::AUX0);
 }
+
+
+
+void 
+VSResModelLib::addTexture(unsigned int unit, std::string filename) {
+
+	int textID = loadRGBATexture(filename, true);
+	for (int i = 0; i < mMyMeshes.size(); ++i)
+		mMyMeshes[i].texUnits[unit] = textID;
+}
+
 
 
 // Auxiliary functions to convert Assimp data to float arays

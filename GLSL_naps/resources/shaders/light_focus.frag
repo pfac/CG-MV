@@ -19,7 +19,7 @@ void main() {
 	
 	float i = 0, is = 0;
 
-	if (dot(lightDir, lightDirV) < cos(lightRadius)) {
+	if (lightRadius == lightRadius || dot(normalize(lightDir), - lightDirV) < cos(lightRadius)) {
 		i	= max(0.0, dot(n, lightDirV));
 		is	= max(0.0, dot(n, h));
 	}

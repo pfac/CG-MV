@@ -1,0 +1,37 @@
+19/06/2006 - France
+
+This program demonstrates how to use High Dynamic Range Rendering
+in OpenGL. Check the associated document for more informations.
+
+You must install the following libraries to compile this demo:
+- SDL  : http://www.libsdl.org
+- boost::thread : http://www.boost.org
+
+To run it, your GPU needs OpenGL 2.0 support and/or the following
+extensions:
+- ARB_texture_float
+- ARB_texture_non_power_of_two
+- EXT_framebuffer_object
+
+Contacts:
+fabien.houlmann@gmail.com
+stephane.metz@gmail.com
+
+-------------------------------------------------------------------------------
+
+
+Copyright (C) 2006 Fabien Houlmann & Stéphane Metz
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.

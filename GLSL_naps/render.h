@@ -11,8 +11,8 @@ namespace GLSL_Naps {
 
 	class Render {
 		
-	static VSShaderLib shader;
-	static VSResModelLib teapot;
+	static VSShaderLib *shader;
+	static VSResModelLib earth;
 	static VSMathLib *vsml;
 
 	static float lightPos[];
@@ -31,5 +31,6 @@ namespace GLSL_Naps {
 		static void setupBuffers();
 		static void setupVSL();
 		static void setupShaders();
+		static void reloadShaders();
 	};
 }

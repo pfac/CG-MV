@@ -1,0 +1,39 @@
+// Position of the view eye in world space
+uniform vec3 eyePos;
+
+// Ratio of indices of refraction for the 3 colors
+uniform vec3 etaRatioRGB;
+
+// Fresnel parameters
+uniform float fresnelBias, fresnelScale, fresnelPower;
+
+// Reflection vector;
+varying vec3 R;
+
+// Separate refraction vectors
+varying vec3 TRed, TGreen, TBlue;
+
+// Reflection factor based on fresnel equation
+varying float refFactor;
+
+void main()
+{
+	// Create incident and normal vectors
+	vec3 I = normalize(gl_Vertex.xyz - eyePos.xyz);
+	vec3 N = normalize(gl_Normal);
+	
+	// Reflection vector
+	R = reflect(I, N);
+	
+	// Separate refraction vectors
+	TRed = refract(I, N, etaRatioRGB.r);
+	TGreen = refract(I, N, etaRatioRGB.g);
+	TBlue = refract(I, N, etaRatioRGB.b);
+	
+	// Appoximation of the fresnel equation
+	refFactor = fresnelBias + fresnelScale * pow(1.0 + dot(I, N), fresnelPower);
+
+	// Transform vertex
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = ftransform();
+}

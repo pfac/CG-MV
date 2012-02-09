@@ -5,6 +5,7 @@
 #include "vsProfileLib.h"
 
 #include "input.h"
+#include "render.h"
 
 namespace GLSL_Naps {
 
@@ -35,10 +36,13 @@ namespace GLSL_Naps {
 			case 'm': glEnable(GL_MULTISAMPLE); break;
 			case 'n': glDisable(GL_MULTISAMPLE); break;
 			case 'k': VSProfileLib::Reset(); break;
+			case '\\': Render::reloadShaders(); break;
+
 			case 'p':
 				std::string s = VSProfileLib::DumpLevels();
 					printf("%s\n", s.c_str());
 					break;
+
 		}
 
 	//  uncomment this if not using an idle func
@@ -117,8 +121,8 @@ namespace GLSL_Naps {
 	}
 
 	void Input::updateCam(float r, float alpha, float beta) {
-		cam[0] = r * sin(DEG2RAD(alpha)) * cos(DEG2RAD(beta));
-		cam[2] = r * cos(DEG2RAD(alpha)) * cos(DEG2RAD(beta));
-		cam[1] = r * sin(DEG2RAD(beta));
+		cam[0] = (float) r * sin(DEG2RAD(alpha)) * cos(DEG2RAD(beta));
+		cam[2] = (float) r * cos(DEG2RAD(alpha)) * cos(DEG2RAD(beta));
+		cam[1] = (float) r * sin(DEG2RAD(beta));
 	}
 }

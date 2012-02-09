@@ -132,18 +132,6 @@ VSMathLib::popMatrix(MatrixTypes aType) {
 	memcpy(mMatrix[aType], m, sizeof(float) * 16);
 	mMatrixStack[aType].pop_back();
 	free(m);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
-
 }
 
 
@@ -152,17 +140,6 @@ void
 VSMathLib::loadIdentity(MatrixTypes aType)
 {
 	setIdentityMatrix(mMatrix[aType]);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
 }
 
 
@@ -184,17 +161,6 @@ VSMathLib::multMatrix(MatrixTypes aType, float *aMatrix)
 		}
 	}
 	memcpy(mMatrix[aType], res, 16 * sizeof(float));
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
 }
 
 
@@ -205,17 +171,6 @@ void
 VSMathLib::loadMatrix(MatrixTypes aType, float *aMatrix)
 {
 	memcpy(mMatrix[aType], aMatrix, 16 * sizeof(float));
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
 }
 
 
@@ -231,25 +186,14 @@ VSMathLib::translate(MatrixTypes aType, float x, float y, float z)
 	mat[14] = z;
 
 	multMatrix(aType,mat);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
 }
 
 
-// glTranslate on the MODELVIEW matrix
+// glTranslate on the MODEL matrix
 void 
 VSMathLib::translate(float x, float y, float z) 
 {
-	translate(MODELVIEW, x,y,z);
+	translate(MODEL, x,y,z);
 }
 
 
@@ -265,17 +209,6 @@ VSMathLib::scale(MatrixTypes aType, float x, float y, float z)
 	mat[10] = z;
 
 	multMatrix(aType,mat);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
 }
 
 
@@ -283,7 +216,7 @@ VSMathLib::scale(MatrixTypes aType, float x, float y, float z)
 void 
 VSMathLib::scale(float x, float y, float z) 
 {
-	scale(MODELVIEW, x, y, z);
+	scale(MODEL, x, y, z);
 }
 
 
@@ -321,17 +254,6 @@ VSMathLib::rotate(MatrixTypes aType, float angle, float x, float y, float z)
 	mat[15]= 1.0f;
 
 	multMatrix(aType,mat);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	if (aType == MODELVIEW || aType == PROJECTION) {
-		matrixToGL(PROJMODELVIEW);
-		matrixToGL(aType);
-		if (aType == MODELVIEW)
-			matrixToGL(NORMAL);
-	}
-	else
-		matrixToGL(aType);
-#endif
 }
 
 
@@ -339,7 +261,7 @@ VSMathLib::rotate(MatrixTypes aType, float angle, float x, float y, float z)
 void 
 VSMathLib::rotate(float angle, float x, float y, float z)
 {
-	rotate(MODELVIEW,angle,x,y,z);
+	rotate(MODEL,angle,x,y,z);
 }
 
 
@@ -391,14 +313,8 @@ VSMathLib::lookAt(float xPos, float yPos, float zPos,
 	m2[13] = -yPos;
 	m2[14] = -zPos;
 
-	multMatrix(MODELVIEW, m1);
-	multMatrix(MODELVIEW, m2);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	matrixToGL(PROJMODELVIEW);
-	matrixToGL(MODELVIEW);
-	matrixToGL(NORMAL);
-#endif
+	multMatrix(VIEW, m1);
+	multMatrix(VIEW, m2);
 }
 
 
@@ -420,11 +336,6 @@ VSMathLib::perspective(float fov, float ratio, float nearp, float farp)
 	projMatrix[3 * 4 + 3] = 0.0f;
 
 	multMatrix(PROJECTION, projMatrix);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	matrixToGL(PROJMODELVIEW);
-	matrixToGL(PROJECTION);
-#endif
 }
 
 
@@ -446,11 +357,6 @@ VSMathLib::ortho(float left, float right,
 	m[3 * 4 + 2] = -(farp + nearp) / (farp - nearp);
 
 	multMatrix(PROJECTION, m);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	matrixToGL(PROJMODELVIEW);
-	matrixToGL(PROJECTION);
-#endif
 }
 
 
@@ -474,11 +380,6 @@ VSMathLib::frustum(float left, float right,
 	m[3 * 4 + 3] = 0.0f;
 
 	multMatrix(PROJECTION, m);
-
-#ifdef VSMathLib_ALWAYS_SEND_TO_OPENGL 
-	matrixToGL(PROJMODELVIEW);
-	matrixToGL(PROJECTION);
-#endif
 }
 
 
@@ -500,9 +401,9 @@ VSMathLib::get(ComputedMatrixTypes aType)
 			computeNormalMatrix3x3();
 			return mNormal3x3; 
 			break;
-		case PROJMODELVIEW: 
-			computeProjModelViewMatrix();
-			return mProjModelView; 
+		default:
+			computeDerivedMatrix(aType);
+			return mCompMatrix[aType]; 
 			break;
 	}
 	// this should never happen!
@@ -513,27 +414,7 @@ VSMathLib::get(ComputedMatrixTypes aType)
              SEND MATRICES TO OPENGL
 ------------------------------------------------------*/
 
-//// to be used with uniform blocks
-//void
-//VSMathLib::matrixToBuffer(MatrixTypes aType) 
-//{
-//	if (mInit && mBlocks && mUniformName[aType] != "")
-//		VSShaderLib::setBlockUniform(mBlockName,mUniformName[aType], mMatrix[aType]);
-//}
-//
-//
-//// to be used with uniform variables
-//void
-//VSMathLib::matrixToUniform(MatrixTypes aType) 
-//{
-//	if (mInit && !mBlocks && mUniformName[aType] != "") {
-//
-//		int p, loc;
-//		glGetIntegerv(GL_CURRENT_PROGRAM, &p);
-//		loc = glGetUniformLocation(p, mUniformName[aType].c_str());
-//		glProgramUniformMatrix4fv(p , loc, 1, false, mMatrix[aType]);
-//	}
-//}
+
 
 
 // universal
@@ -587,17 +468,18 @@ VSMathLib::matrixToGL(ComputedMatrixTypes aType)
 									mComputedMatUniformName[NORMAL],
 									mNormal);
 			}
-			if (aType == PROJMODELVIEW && mComputedMatUniformName[PROJMODELVIEW] != "") {
-				computeProjModelViewMatrix();
-				if (mComputedMatUniformArrayIndex[PROJMODELVIEW])
+			else if (mComputedMatUniformName[aType] != "") {
+				computeDerivedMatrix(aType);
+				if (mComputedMatUniformArrayIndex[aType])
 					VSShaderLib::setBlockUniformArrayElement(mBlockName, 
-									mComputedMatUniformName[PROJMODELVIEW], 
-									mComputedMatUniformArrayIndex[PROJMODELVIEW],
-									mNormal);
+									mComputedMatUniformName[aType], 
+									mComputedMatUniformArrayIndex[aType],
+									mCompMatrix[aType]);
 				else
-				VSShaderLib::setBlockUniform(mBlockName, 
-									mComputedMatUniformName[PROJMODELVIEW], 
-									mProjModelView);
+					VSShaderLib::setBlockUniform(mBlockName, 
+									mComputedMatUniformName[aType], 
+									mCompMatrix[aType]);
+			}
 			}
 		}
 		else {
@@ -611,12 +493,12 @@ VSMathLib::matrixToGL(ComputedMatrixTypes aType)
 									mComputedMatUniformName[NORMAL].c_str());
 				glProgramUniformMatrix3fv(p, loc, 1, false, mNormal3x3);
 			}
-			if (aType == PROJMODELVIEW && mComputedMatUniformName[PROJMODELVIEW] != "") {
-				computeProjModelViewMatrix();
+			else if (mComputedMatUniformName[aType] != "") {
+				computeDerivedMatrix(aType);
 				loc = glGetUniformLocation(p, 
-									mComputedMatUniformName[PROJMODELVIEW].c_str());
-				glProgramUniformMatrix4fv(p, loc, 1, false, mProjModelView);
-			}
+									mComputedMatUniformName[aType].c_str());
+				glProgramUniformMatrix4fv(p, loc, 1, false, mCompMatrix[aType]);
+			
 			}
 		}
 	
@@ -652,17 +534,21 @@ VSMathLib::matricesToGL() {
 									mComputedMatUniformName[NORMAL],
 									mNormal);
 			}
-			if (mComputedMatUniformName[PROJMODELVIEW] != "") {
-				computeProjModelViewMatrix();
-				if (mComputedMatUniformArrayIndex[PROJMODELVIEW])
-					VSShaderLib::setBlockUniformArrayElement(mBlockName, 
-									mComputedMatUniformName[PROJMODELVIEW], 
-									mComputedMatUniformArrayIndex[PROJMODELVIEW],
-									mNormal);
-				else
-				VSShaderLib::setBlockUniform(mBlockName, 
-									mComputedMatUniformName[PROJMODELVIEW], 
-									mProjModelView);
+
+			for (int i = 0; i < COUNT_COMPUTED_MATRICES-1; ++i) {
+
+				if (mComputedMatUniformName[i] != "") {
+					computeDerivedMatrix((VSMathLib::ComputedMatrixTypes)i);
+					if (mComputedMatUniformArrayIndex[i])
+						VSShaderLib::setBlockUniformArrayElement(mBlockName, 
+										mComputedMatUniformName[i], 
+										mComputedMatUniformArrayIndex[i],
+										mCompMatrix[i]);
+					else
+					VSShaderLib::setBlockUniform(mBlockName, 
+										mComputedMatUniformName[i], 
+										mCompMatrix[i]);
+				}
 			}
 		}
 		else {
@@ -681,11 +567,13 @@ VSMathLib::matricesToGL() {
 
 				glProgramUniformMatrix3fv(p, loc, 1, false, mNormal3x3);
 			}
-			if (mComputedMatUniformName[PROJMODELVIEW] != "") {
-				computeProjModelViewMatrix();
-				loc = glGetUniformLocation(p, 
-									mComputedMatUniformName[PROJMODELVIEW].c_str());
-				glProgramUniformMatrix4fv(p, loc, 1, false, mProjModelView);
+			for (int i = 0; i < COUNT_COMPUTED_MATRICES-1; ++i) {
+				if (mComputedMatUniformName[i] != "") {
+					computeDerivedMatrix((VSMathLib::ComputedMatrixTypes)i);
+					loc = glGetUniformLocation(p, 
+									mComputedMatUniformName[i].c_str());
+					glProgramUniformMatrix4fv(p, loc, 1, false, mCompMatrix[i]);
+			}
 			}
 		}
 	
@@ -711,7 +599,7 @@ VSMathLib::setIdentityMatrix( float *mat, int size) {
 }
 
 
-// Compute p = M * point
+// Compute res = M * point
 void
 VSMathLib::multMatrixPoint(MatrixTypes aType, float *point, float *res) {
 
@@ -726,6 +614,37 @@ VSMathLib::multMatrixPoint(MatrixTypes aType, float *point, float *res) {
 	}
 }
 
+// Compute res = M * point
+void
+VSMathLib::multMatrixPoint(ComputedMatrixTypes aType, float *point, float *res) {
+
+
+	if (aType == NORMAL) {
+		computeNormalMatrix();
+		for (int i = 0; i < 3; ++i) {
+
+			res[i] = 0.0f;
+	
+			for (int j = 0; j < 3; j++) {
+		
+				res[i] += point[j] * mNormal[j*4 + i];
+			} 
+		}
+	}
+
+	else {
+		computeDerivedMatrix(aType);
+		for (int i = 0; i < 4; ++i) {
+
+			res[i] = 0.0f;
+	
+			for (int j = 0; j < 4; j++) {
+		
+				res[i] += point[j] * mCompMatrix[aType][j*4 + i];
+			} 
+		}
+	}
+}
 
 // res = a cross b;
 void 
@@ -799,17 +718,19 @@ M3(int i, int j)
 void
 VSMathLib::computeNormalMatrix() {
 
-	mMat3x3[0] = mMatrix[MODELVIEW][0];
-	mMat3x3[1] = mMatrix[MODELVIEW][1];
-	mMat3x3[2] = mMatrix[MODELVIEW][2];
+	computeDerivedMatrix(VIEW_MODEL);
 
-	mMat3x3[3] = mMatrix[MODELVIEW][4];
-	mMat3x3[4] = mMatrix[MODELVIEW][5];
-	mMat3x3[5] = mMatrix[MODELVIEW][6];
+	mMat3x3[0] = mCompMatrix[VIEW_MODEL][0];
+	mMat3x3[1] = mCompMatrix[VIEW_MODEL][1];
+	mMat3x3[2] = mCompMatrix[VIEW_MODEL][2];
 
-	mMat3x3[6] = mMatrix[MODELVIEW][8];
-	mMat3x3[7] = mMatrix[MODELVIEW][9];
-	mMat3x3[8] = mMatrix[MODELVIEW][10];
+	mMat3x3[3] = mCompMatrix[VIEW_MODEL][4];
+	mMat3x3[4] = mCompMatrix[VIEW_MODEL][5];
+	mMat3x3[5] = mCompMatrix[VIEW_MODEL][6];
+
+	mMat3x3[6] = mCompMatrix[VIEW_MODEL][8];
+	mMat3x3[7] = mCompMatrix[VIEW_MODEL][9];
+	mMat3x3[8] = mCompMatrix[VIEW_MODEL][10];
 
 	float det, invDet;
 
@@ -839,17 +760,19 @@ VSMathLib::computeNormalMatrix() {
 void
 VSMathLib::computeNormalMatrix3x3() {
 
-	mMat3x3[0] = mMatrix[MODELVIEW][0];
-	mMat3x3[1] = mMatrix[MODELVIEW][1];
-	mMat3x3[2] = mMatrix[MODELVIEW][2];
+	computeDerivedMatrix(VIEW_MODEL);
 
-	mMat3x3[3] = mMatrix[MODELVIEW][4];
-	mMat3x3[4] = mMatrix[MODELVIEW][5];
-	mMat3x3[5] = mMatrix[MODELVIEW][6];
+	mMat3x3[0] = mCompMatrix[VIEW_MODEL][0];
+	mMat3x3[1] = mCompMatrix[VIEW_MODEL][1];
+	mMat3x3[2] = mCompMatrix[VIEW_MODEL][2];
 
-	mMat3x3[6] = mMatrix[MODELVIEW][8];
-	mMat3x3[7] = mMatrix[MODELVIEW][9];
-	mMat3x3[8] = mMatrix[MODELVIEW][10];
+	mMat3x3[3] = mCompMatrix[VIEW_MODEL][4];
+	mMat3x3[4] = mCompMatrix[VIEW_MODEL][5];
+	mMat3x3[5] = mCompMatrix[VIEW_MODEL][6];
+
+	mMat3x3[6] = mCompMatrix[VIEW_MODEL][8];
+	mMat3x3[7] = mCompMatrix[VIEW_MODEL][9];
+	mMat3x3[8] = mCompMatrix[VIEW_MODEL][10];
 
 	float det, invDet;
 
@@ -872,12 +795,17 @@ VSMathLib::computeNormalMatrix3x3() {
 }
 
 
-// Computes the derived projection matrix
+// Computes derived matrices
 void 
-VSMathLib::computeProjModelViewMatrix() {
+VSMathLib::computeDerivedMatrix(ComputedMatrixTypes aType) {
 	
-	memcpy(mProjModelView, mMatrix[PROJECTION], 16 * sizeof(float));
-	multMatrix(mProjModelView, mMatrix[MODELVIEW]);
+	memcpy(mCompMatrix[VIEW_MODEL], mMatrix[VIEW], 16 * sizeof(float));
+	multMatrix(mCompMatrix[VIEW_MODEL], mMatrix[MODEL]);
+
+	if (aType == PROJ_VIEW_MODEL) {
+		memcpy(mCompMatrix[PROJ_VIEW_MODEL], mMatrix[PROJECTION], 16 * sizeof(float));
+		multMatrix(mCompMatrix[PROJ_VIEW_MODEL], mCompMatrix[VIEW_MODEL]);
+	}
 }
 
 

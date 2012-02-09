@@ -1,0 +1,21 @@
+// Position of the view eye in world space
+uniform vec3 eyePos;
+
+// Ratio of indices of refraction
+uniform float etaRatio;
+
+// Refracted vector
+varying vec3 R;
+
+void main()
+{
+	// Create incident vector
+	vec3 I = normalize(gl_Vertex.xyz - eyePos.xyz);
+	
+	// Calculate refracted vector
+	R = refract(I, gl_Normal, etaRatio);
+
+	// Transform vertex
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = ftransform();
+}

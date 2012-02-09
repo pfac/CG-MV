@@ -67,11 +67,11 @@ public:
 	/// implementation of the superclass abstract method
 	virtual void render();
 
-
+virtual void addTexture(unsigned int unit, std::string filename);
 protected:
 
 	// A model can be made of many meshes. Each is stored
-	// in the follwoing structure
+	// in the following structure
 	struct MyMesh{
 		GLuint vao;
 		GLuint texUnits[MAX_TEXTURES];
@@ -80,6 +80,12 @@ protected:
 		int numIndices;
 		unsigned int type;
 		struct Material mat;
+	};
+
+	struct HalfEdge {
+		GLuint vertex;
+		struct HalfEdge *next;
+		struct HalfEdge *twin;
 	};
 
 	/// the mesh collection
@@ -91,6 +97,8 @@ private:
 
 	// the global Assimp scene object
 	const aiScene* pScene;
+
+	bool pUseAdjacency;
 
 	// images / texture
 	// map image filenames to textureIds

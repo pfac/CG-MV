@@ -25,6 +25,9 @@
     <Filter Include="Resource Files\shaders">
       <UniqueIdentifier>{f25b86a6-c51b-40eb-8e54-0240d4307b36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\textures">
+      <UniqueIdentifier>{b18a2760-5ef7-4633-85bc-92cc4bf7ef9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,6 +132,27 @@
     </None>
     <None Include="resources\shaders\light_focus.vert">
       <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\textures\night.frag">
+      <Filter>Resource Files\shaders\textures</Filter>
+    </None>
+    <None Include="resources\shaders\textures\night.vert">
+      <Filter>Resource Files\shaders\textures</Filter>
+    </None>
+    <None Include="resources\shaders\textures\stripes.frag">
+      <Filter>Resource Files\shaders\textures</Filter>
+    </None>
+    <None Include="resources\shaders\texture.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\texture.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\textures\tmpl_texture.frag">
+      <Filter>Resource Files\shaders\textures</Filter>
+    </None>
+    <None Include="resources\shaders\textures\tmpl_texture.vert">
+      <Filter>Resource Files\shaders\textures</Filter>
     </None>
   </ItemGroup>
 </Project>

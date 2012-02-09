@@ -1,0 +1,22 @@
+/**
+ * Calcula a reflexão do objecto
+ * recebendo a posição da camara em world space, calcula o vector de refexão
+ */
+
+// Position of the view eye in world space
+uniform vec3 eyePos;
+
+// Reflected vector
+varying vec3 R;
+
+void main()
+{
+	// Create incident vector
+	vec3 I = normalize(gl_Vertex.xyz - eyePos.xyz);
+	
+	// Calculate reflected vector
+	R = reflect(I, gl_Normal);
+	
+	// Transform vertex
+	gl_Position = ftransform();
+}

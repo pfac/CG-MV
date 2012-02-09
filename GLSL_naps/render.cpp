@@ -6,66 +6,88 @@
 
 
 namespace GLSL_Naps {
-	VSShaderLib		Render::shader;
-	VSResModelLib	Render::teapot;
+	VSShaderLib*	Render::shader;
+	VSResModelLib	Render::earth;
 	VSMathLib*		Render::vsml;
-	float			Render::lightPos[]		= {1.0f, 0.0f, 0.0f, 0.0f};	
-	float			Render::lightDir[]		= {0.0f, 0.0f, 0.0f, 0.0f};
+	float			Render::lightPos[]		= {3.0f, 0.0f, 3.0f, 1.0f};	
+	float			Render::lightDir[]		= {1.0f, 0.0f, 0.0f, 0.0f};
 	float			Render::lightRadius		= 90.0f;
 
 	float			Render::diffuse[]	= {0.8f, 0.8f, 0.8f};
-	float			Render::specular[]	= {0.3f, 0.3f, 0.3f};
+	float			Render::specular[]	= {0.1f, 0.1f, 0.1f};
 	float			Render::shininess	= 4;
 
 	void Render::render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	glLoadIdentity();
 
-		vsml->loadIdentity(VSMathLib::MODELVIEW);
+		vsml->loadIdentity(VSMathLib::VIEW);
+		vsml->loadIdentity(VSMathLib::MODEL);
 		vsml->lookAt(Input::cam[0], Input::cam[1], Input::cam[2], 0,0,0, 0,1,0);
-		for(int y = -1; y <= 1; ++y) {
-			for(int x = -1; x <= 1; ++x) {
-				vsml->pushMatrix(VSMathLib::MODELVIEW);
-				vsml->translate((float) x * 2, 0, (float) y * 2);
-				teapot.render();
-				vsml->popMatrix(VSMathLib::MODELVIEW);
-			}
-		}
-		//teapot.render();
+		earth.render();
 
 		glutSwapBuffers();
+		
 	}
 
 	#pragma region "Setup"
 	void Render::setupShaders() {
-		shader.init();
-		shader.loadShader(VSShaderLib::VERTEX_SHADER, "resources/shaders/light_focus.vert");
-		shader.loadShader(VSShaderLib::FRAGMENT_SHADER, "resources/shaders/light_focus.frag");
-		shader.setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "position");
-		shader.setVertexAttribName(VSShaderLib::NORMAL_ATTRIB, "normal");
-		shader.setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "tex_coord");
+		shader = new VSShaderLib();
+		shader->init();
+		reloadShaders();
+	}
 	
-		shader.prepareProgram();
-		printf("%s\n",shader.getAllInfoLogs().c_str());
+	void Render::reloadShaders() {
+		VSShaderLib *new_shader = new VSShaderLib();
+		new_shader->init();
+		new_shader->loadShader(VSShaderLib::VERTEX_SHADER, "resources/shaders/texture.vert");
+		new_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "resources/shaders/texture.frag");
+		new_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "position");
+		new_shader->setVertexAttribName(VSShaderLib::NORMAL_ATTRIB, "normal");
+		new_shader->setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "texCoord");
 	
-		shader.setUniform("lightPos", lightPos);
-		shader.setUniform("lightDir", lightDir);
-		shader.setUniform("lightRadius", lightRadius);
-		shader.setUniform("diffuse", diffuse);
-		shader.setUniform("specular", specular);
-		shader.setUniform("shininess", shininess);
-		glUseProgram(shader.getProgramIndex());
+		new_shader->prepareProgram();
+		printf("%s\n",new_shader->getAllInfoLogs().c_str());
+
+		glValidateProgram(new_shader->getProgramIndex());
+		int validation;
+		glGetProgramiv(new_shader->getProgramIndex(), GL_VALIDATE_STATUS, &validation);
+		if (validation == GL_TRUE) {
+			new_shader->setUniform("lightPos", lightPos);
+			new_shader->setUniform("lightDir", lightDir);
+			//new_shader->setUniform("lightRadius", lightRadius);
+			//new_shader->setUniform("diffuse", diffuse);
+			//new_shader->setUniform("specular", specular);
+			//new_shader->setUniform("shininess", shininess);
+			new_shader->setUniform("texDay", 0);
+			new_shader->setUniform("texNight", 1);
+			new_shader->setUniform("texClouds", 2);
+			new_shader->setUniform("texSpec", 3);
+			glUseProgram(new_shader->getProgramIndex());
+
+			delete shader;
+			shader = new_shader;
+		} else {
+			delete new_shader;
+		}
 	}
 
 	void Render::setupVSL() {
 		vsml = VSMathLib::getInstance();
-		vsml->setUniformName(VSMathLib::PROJMODELVIEW, "pvm");
-		vsml->loadIdentity(VSMathLib::MODELVIEW);
-		vsml->setUniformName(VSMathLib::MODELVIEW, "vm");
+		vsml->setUniformName(VSMathLib::PROJ_VIEW_MODEL, "pvm");
+		vsml->loadIdentity(VSMathLib::MODEL);
+		vsml->loadIdentity(VSMathLib::VIEW);
+		vsml->setUniformName(VSMathLib::VIEW_MODEL, "vm");
 		vsml->setUniformName(VSMathLib::NORMAL, "normalMat");
+		
 	}
 
 	void Render::setupBuffers() {
-		teapot.load("resources/models/Teapot.3ds");
+		earth.load("resources/models/sphere.obj");
+		earth.addTexture(0, "resources/textures/earthDay.jpg");
+		earth.addTexture(1, "resources/textures/earthNight.jpg");
+		earth.addTexture(2, "resources/textures/earthClouds.jpg");
+		earth.addTexture(3, "resources/textures/earthSpec.jpg");
+
 	}
 	#pragma endregion
 

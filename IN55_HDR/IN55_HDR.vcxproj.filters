@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="3D">
+      <UniqueIdentifier>{02be8a21-73de-4e9d-8176-e07c86c2a395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{43cfbe8a-387e-493d-9dd2-9bfab4e5b0e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGLApp">
+      <UniqueIdentifier>{93a166a0-72b2-4c46-907e-86c47b950abb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Image">
+      <UniqueIdentifier>{be1edb60-4af7-4ed6-bf89-75a8f7dbaa76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{8bfe7728-f517-4a1f-90fc-975900c73c45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{abb65227-5a11-439c-94ff-d5b230607bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{b1ac1475-366e-40f6-ab04-c372e2645ed2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{5ec1bbd8-15b8-48f3-b40c-e46d7906a38b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HdrApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="DownSampler.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="GLee.c">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLFBO.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLFont.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLRenderer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLShader.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLTexture2D.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLTextureCube.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLApp.cpp">
+      <Filter>OpenGLApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="rgbe.c">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="TriMesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TriMeshManager.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryManager.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HdrApp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="std.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="DownSampler.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLee.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLFBO.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLFont.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLRenderer.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLShader.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLTexture2D.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLTextureCube.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>OpenGLApp</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLApp.h">
+      <Filter>OpenGLApp</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLException.h">
+      <Filter>OpenGLApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="rgbe.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="TriMesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TriMeshManager.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="AllocOverLoaderOff.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="AllocOverLoaderOn.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryManager.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\blur.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\blur.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\chromaticDispersion.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\chromaticDispersion.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\extractBloom.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\extractBloom.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\fresnel.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\fresnel.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\reflect.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\reflect.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\reflectTex.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\reflectTex.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\refract.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\refract.vp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\tone.fp">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\tone.vp">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

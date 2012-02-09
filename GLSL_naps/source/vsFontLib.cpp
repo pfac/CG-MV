@@ -183,9 +183,12 @@ VSFontLib::prepareRender( float x, float y)
 	mVSML->loadIdentity(VSMathLib::PROJECTION);
 	mVSML->ortho((float)vp[0], (float)vp[0] + (float)vp[2], (float)vp[1] + (float)vp[3], (float)vp[1]);
 	
-	// set modelview = identity matrix
-	mVSML->pushMatrix(VSMathLib::MODELVIEW);
-	mVSML->loadIdentity(VSMathLib::MODELVIEW);
+	// set model and view = identity matrix
+	mVSML->pushMatrix(VSMathLib::MODEL);
+	mVSML->loadIdentity(VSMathLib::MODEL);
+
+	mVSML->pushMatrix(VSMathLib::VIEW);
+	mVSML->loadIdentity(VSMathLib::VIEW);
 
 	//// translate to cursor position
 	mVSML->translate((float)x,(float)y,0.0f);
@@ -209,8 +212,9 @@ VSFontLib::restoreRender()
 	// restore previous projection matrix
 	mVSML->popMatrix(VSMathLib::PROJECTION);
 
-	// restore previous modelview matrix
-	mVSML->popMatrix(VSMathLib::MODELVIEW);
+	// restore previous model and view matrices
+	mVSML->popMatrix(VSMathLib::MODEL);
+	mVSML->popMatrix(VSMathLib::VIEW);
 }
 
 

@@ -95,12 +95,19 @@
   <ItemGroup>
     <None Include="resources\models\CatFinal.3ds" />
     <None Include="resources\models\Teapot.3ds" />
+    <None Include="resources\shaders\texture.frag" />
+    <None Include="resources\shaders\texture.vert" />
     <None Include="resources\shaders\light_focus.frag" />
     <None Include="resources\shaders\light_focus.vert" />
     <None Include="resources\shaders\light_gourad.frag" />
     <None Include="resources\shaders\light_gourad.vert" />
     <None Include="resources\shaders\light_phong.frag" />
     <None Include="resources\shaders\light_phong.vert" />
+    <None Include="resources\shaders\textures\night.frag" />
+    <None Include="resources\shaders\textures\night.vert" />
+    <None Include="resources\shaders\textures\stripes.frag" />
+    <None Include="resources\shaders\textures\tmpl_texture.frag" />
+    <None Include="resources\shaders\textures\tmpl_texture.vert" />
     <None Include="resources\shaders\toon.frag" />
     <None Include="resources\shaders\toon.vert" />
   </ItemGroup>

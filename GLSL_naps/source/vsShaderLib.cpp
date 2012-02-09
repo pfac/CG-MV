@@ -30,6 +30,7 @@
 
 #include "vsShaderLib.h"
 
+//#define NDEBUG
 // pre conditions are established with asserts
 // if having errors using the lib switch to Debug mode
 #include <assert.h>
@@ -235,7 +236,7 @@ VSShaderLib::setUniform(std::string name, float value) {
 void 
 VSShaderLib::setUniform(std::string name, void *value) {
 
-	assert(pUniforms.count(name) != 0);
+//	assert(pUniforms.count(name) != 0);
 
 	myUniforms u = pUniforms[name];
 	switch (u.type) {
@@ -669,6 +670,7 @@ VSShaderLib::addUniforms() {
 	int count;
 	GLsizei actualLen;
 	GLint size;
+	GLint uniArrayStride;
 	GLenum type;
 	char *name;
 
@@ -679,13 +681,14 @@ VSShaderLib::addUniforms() {
 
 	name = (char *)malloc(sizeof(char) * maxUniLength);
 
-	int loc;
+	unsigned int loc;
 	for (int i = 0; i < count; ++i) {
 
 		glGetActiveUniform(pProgram, i, maxUniLength, &actualLen, &size, &type, name);
 		// -1 indicates that is not an active uniform, although it may be present in a
 		// uniform block
 		loc = glGetUniformLocation(pProgram, name);
+		glGetActiveUniformsiv(pProgram, 1, &loc, GL_UNIFORM_ARRAY_STRIDE, &uniArrayStride);
 		if (loc != -1)
 			addUniform(name, type, size);
 	}
