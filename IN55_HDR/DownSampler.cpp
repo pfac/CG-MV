@@ -17,15 +17,16 @@ void DownSampler::init(int w, int h, int format)
 	// Calculate the number of texture if we want to get a 1x1 texture
 	int x = w;
 	int y = h;
-
+	
 	int nx = 0;
+	int ny = 0;
+
 	while (x>1)
 	{
 		nx++;
 		x = Math::ceil(x/2.0f);
 	}
 
-	int ny = 0;
 	while (y>1)
 	{
 		ny++;

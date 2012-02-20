@@ -16,6 +16,7 @@ void main()
 	vec4 color = texture2D(tex, st);
 	vec4 colorBloom = texture2D(bloom, st);
 	
+	// HACK somar bloom á cor actual
 	// Add bloom to the image
 	color += colorBloom * bloomFactor;
 
@@ -23,6 +24,9 @@ void main()
 	float Y = dot(vec4(0.30, 0.59, 0.11, 0.0), color);
 	float YD = exposure * (exposure/brightThreshold + 1.0) / (exposure + 1.0);
 	color *= YD;
+
+	// HACK mostrar apenas mapa de bloom
+	color = colorBloom;
 	
 	gl_FragColor = color;
 }

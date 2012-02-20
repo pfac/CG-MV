@@ -6,3 +6,9 @@
 *.lastbuildstate
 *.manifest
 *.exe
+*.log
+*.aux
+*.out
+*.pdf
+*.bbl
+*.blg

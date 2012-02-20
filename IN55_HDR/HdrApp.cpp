@@ -331,8 +331,8 @@ void HdrApp::renderHdr()
 		downSampler->getRenderTexture(2)->bind();
 		cam->drawQuad();
 
-		downSampler->getRenderTexture(3)->bind();
-		cam->drawQuad();
+		//downSampler->getRenderTexture(3)->bind();
+		//cam->drawQuad();
 
 	rtBloom->endCapture();
 	glDisable(GL_BLEND);
