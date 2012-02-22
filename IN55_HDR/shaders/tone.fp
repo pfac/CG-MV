@@ -23,10 +23,10 @@ void main()
 	// Perform tone-mapping
 	float Y = dot(vec4(0.30, 0.59, 0.11, 0.0), color);
 	float YD = exposure * (exposure/brightThreshold + 1.0) / (exposure + 1.0);
-	color *= YD;
+	//color *= YD;
 
 	// HACK mostrar apenas mapa de bloom
-	color = colorBloom;
+	//color = colorBloom;
 	
 	gl_FragColor = color;
 }
