@@ -40,8 +40,11 @@
 \author{Miguel Palhas
 \affil{Universidade do Minho}}
 
-%\category{I.3.7}{Computer Graphics}{Three-Dimensional Graphics and Realism}[Animation]
-%\category{I.3.5}{Computer Graphics}{Computational Geometry and Object Modeling}[Physically based modeling]
+\category{F.4.2}{Grammars and Other Rewriting Systems}{L Systems}
+\category{I.3.5}{Computer Graphics}{Computational Geometry and Object Modeling}[Physically based modeling]
+\category{I.3.5}{Computer Graphics}{Computational Geometry and Object Modeling}[Object hierarchies]
+\category{I.3.7}{Computer Graphics}{Three-Dimensional Graphics and Realism}[Animation]
+\category{I.3.7}{Computer Graphics}{Three-Dimensional Graphics and Realism}[Fractals]
 
 %\terms{Experimentation, Human Factors}
 
@@ -61,20 +64,7 @@
 %\end{bottomstuff}
 
 \begin{abstract}
-[Abstact here]
- % We introduce a physiologically-based model for pupil light reflex (PLR) and an image-based model for iridal pattern
-%deformation. Our PLR model expresses the pupil diameter as a function of the lighting of the  environment, and is
-%described by a delay-differential equation, naturally adapting the pupil diameter even to abrupt changes in light
-%conditions. Since the parameters of our PLR model were derived from measured data, it correctly simulates the actual
-%behavior of the human pupil. Another contribution of our work is a model for realistic deformation of the iris pattern as a
-%function of pupil dilation and constriction. Our models produce high-fidelity appearance effects and can be used to
-%produce real-time predictive animations of the pupil and iris under variable lighting conditions. We assess the
-%predictability and quality of our simulations  through comparisons of modeled results against measured data derived from
-%experiments also described in this work. Combined, our models can bring facial animation to new photorealistic
-%standards. Another contribution of our work is a model for realistic deformation of the iris pattern as a
-%function of pupil dilation and constriction. Another contribution of our work is a model for realistic deformation of the iris pattern as a
-%function of pupil dilation and constriction.  Another contribution of our work is a model for realistic deformation of the iris pattern as a
-%function of pupil dilation and constriction.
+A look into L-Systems, a formal method of defining structures that exhibit recursive or self-similar patterns. Some recent platforms that use L-Systems are referenced, for their contribution to the field, and it's possible usefulness in either scientific analysis, or real time applications, like games or simulators. An overview is given on some potential applications of L-Systems, such as biology or architecture, and also some of the supporting platforms and languages that can be used to achieve this.
 \end{abstract}
 
 
@@ -382,6 +372,45 @@ The method used here uses two symbols, $F$ and $G$ to declare movement. For the 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{L-Systems and Programming}
+\label{sec:languages}
+
+There are already a few attempts of implementations of programming languages with a focus on L-System declaration
+
+\subsection{The L+C Modeling Language}
+\label{subsec:lc_language}
+
+The L+C Language \cite{karwowski2003design} is a C++ based language that combines a L-System constructs with the general-purpose language C++. The constructs have a syntax that is similar in many ways to traditional L-System notation.
+
+A typical L+C program has the following structure:
+
+\begin{lstlisting}[label={lst:lc_example}]
+  #include <lpgfall.h>
+  // declarations of data structures
+  // declarations of functions
+  // declarations of modules
+  derivation length: n;
+  axiom: module_list;
+  // productions;
+\end{lstlisting}
+
+\emph{lpfgall.h} is the standard library for \emph{lpfg} files (a plant modeling program to render L+C code). It includes some standard C/C++ libraries required for the program, and also defines some default structures and parameters used throughout the program.
+
+\subsubsection{L+C Constructs}
+\label{subsubsec:constructs}
+
+An L+C program can be divided into C++ declarations and L-System constructs. These constructs are declarations like the \emph{derivation length: n} shown in the example, and are processed by the L2C, or L+C to C converter, before compilation. The derivation length defines how many steps the execution should be take, or in other words, the depth of the final result. A bigger length will result in finer, more detailed results, but with the increased execution time.
+
+The constructs also include
+
+\subsection{L-Studio}
+\label{subsec:lstudio}
+
+L-studio is a simulation software used to create visual simulations of models using L-Systems \cite{LSTUDIO}.
+It's core functionality is in the two simulation programs: \emph{cpfg} and \emph{lpfg}. These programs receive an L-System as input and use it to produce a visual representation of the provived model. The models described may be animated and/or allow for interaction. Some output data may also be provided during the simulation. While \emph{cpfg} and \emph{lpfg} both share a common interface, the first is suitable for rapid creation of simple models, while the second is more useful when attempting more complex simulations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Applications}
 \label{sec:applications}
 
@@ -466,7 +495,18 @@ Just as natural organisms exhibit self-similarity properties which allow them to
 
 This concepts can be translated to other large scale, and possibly not natural elements. Cities for example, exhibit similar properties. A city can be though of as a collection of buildings, that follow a certain distribution pattern (usually bigger and more concentrated in the center of the city), and are surrounded by other elements, such as streets, parks, or any other object. Each building can then be modeled individually, as the same logic applies to them.
 
-An L-System based approach called \emph{CityEngine} has been developed with capabilities to model a complete city using a small set of input data, such as information on the geography of the terrain, or statistical information about population concentration. \autoref{fig:cities} shows the pipeline for the proposed solution.
+An L-System based approach called \emph{CityEngine} has been developed with capabilities to model a complete city using a small set of input data, such as information on the geography of the terrain, or statistical information about population concentration. This is an example of where a self-sensitive L-System implementation can be useful. The streets in a city can branch themselves with fractal-like properties, but they also form a closed system. A regular L-System approach cannot be used to model this behavior, as it does not provide the capability of representing a self-sensitive system.
+
+In order to achieve a self-sensitive result, the approach was to, after generating a segment of a street, checking it for collisions with other existing segments. In the event a collision, the road is pruned, generating a crossing. \autoref{fig:pruning} shows the behavior used.
+
+\begin{figure}[!htp]
+  \begin{center}
+    \includegraphics[width=0.7\columnwidth]{images/12_selfsensitive}
+    \caption{Self-sensitive street generation of a city \label{fig:pruning}}
+    \end{center}
+\end{figure}
+
+\autoref{fig:cities} shows the pipeline for the proposed solution.
 
 \begin{figure}[!htp]
   \begin{center}
@@ -477,45 +517,20 @@ An L-System based approach called \emph{CityEngine} has been developed with capa
 
 The tool works by first feeding the input to a road-generation system. This system uses an approach where streets are categorized in two main classes: main streets and side-roads. While main streets usually exhibit a radial behavior, with multiple streets converging around a centric point, side-roads have a raster oriented pattern. Based on this, the road generation uses some patterns to apply in different scenarios, allowing for different zones of the city to follow different rules.
 
+After the generation of the streets, a new subdivision is made, dividing the city into blocks, each block will consist of multiple buildings. These buildings, in turn, can be generated with a parametric, stochastic L-System. A lot of factors can come into play here, like the usage of higher buildings only in blocks located in the center of the town, or event regulations about the size of the buildings for a given city zone.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{L-Systems and Programming}
-\label{sec:languages}
+Textures are then applied to the scene, based on actual pictures of buildings, which are modified and projected onto each surface. Procedural textures can also be used to reduce the amount of work to prepare the textures for each building.
 
-There are already a few attempts of implementations of programming languages with a focus on L-System declaration
+The final result is a system that is capable of generating a large-scale city based on a small size, two dimensional input, mostly with the usage of parametric and stochastic L-Systems to generate high fidelity results. \autoref{fig:finalcity} shows an example of a portion of a city modeled using the proposed solution. The complete city consists of a total of 26000 buildings.
 
-\subsection{The L+C Modeling Language}
-\label{subsec:lc_language}
+\begin{figure}[!htp]
+  \begin{center}
+    \includegraphics[width=0.6\columnwidth]{images/13_finalcity}
+    \caption{L-System based city \label{fig:finalcity}}
+    \end{center}
+\end{figure}
 
-The L+C Language \cite{karwowski2003design} is a C++ based language that combines a L-System constructs with the general-purpose language C++. The constructs have a syntax that is similar in many ways to traditional L-System notation.
 
-A typical L+C program has the following structure:
-
-\begin{lstlisting}[label={lst:lc_example}]
-  #include <lpgfall.h>
-  // declarations of data structures
-  // declarations of functions
-  // declarations of modules
-  derivation length: n;
-  axiom: module_list;
-  // productions;
-\end{lstlisting}
-
-\emph{lpfgall.h} is the standard library for \emph{lpfg} files (a plant modeling program to render L+C code). It includes some standard C/C++ libraries required for the program, and also defines some default structures and parameters used throughout the program.
-
-\subsubsection{L+C Constructs}
-\label{subsubsec:constructs}
-
-An L+C program can be divided into C++ declarations and L-System constructs. These constructs are declarations like the \emph{derivation length: n} shown in the example, and are processed by the L2C, or L+C to C converter, before compilation. The derivation length defines how many steps the execution should be take, or in other words, the depth of the final result. A bigger length will result in finer, more detailed results, but with the increased execution time.
-
-The constructs also include
-
-\subsection{L-Studio}
-\label{subsec:lstudio}
-
-L-studio is a simulation software used to create visual simulations of models using L-Systems \cite{LSTUDIO}.
-It's core functionality is in the two simulation programs: \emph{cpfg} and \emph{lpfg}. These programs receive an L-System as input and use it to produce a visual representation of the provived model. The models described may be animated and/or allow for interaction. Some output data may also be provided during the simulation. While \emph{cpfg} and \emph{lpfg} both share a common interface, the first is suitable for rapid creation of simple models, while the second is more useful when attempting more complex simulations.
 
 
 \bibliographystyle{acmtog}
